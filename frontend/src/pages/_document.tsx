@@ -5,10 +5,6 @@ export default function Document() {
         <Html lang='en'>
             <Head>
                 <meta
-                    name='viewport'
-                    content='width=device-width, initial-scale=1'
-                />
-                <meta
                     name='description'
                     content="Echanger en groupe sur des cadeaux communs n'a jamais été aussi simple"
                 />

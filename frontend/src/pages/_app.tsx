@@ -21,6 +21,10 @@ export default function App({ Component, pageProps }: AppProps) {
         <ApolloProvider client={client}>
             <Head>
                 <title>Easy Gift</title>
+                <meta
+                    name='viewport'
+                    content='width=device-width, initial-scale=1'
+                />
             </Head>
             <UserDataProvider>
                 <Layout>

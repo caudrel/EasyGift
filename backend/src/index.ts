@@ -18,6 +18,8 @@ import { useServer } from 'graphql-ws/lib/use/ws'
 
 dotenv.config()
 
+require('events').EventEmitter.defaultMaxListeners = 40
+
 export interface MyContext {
     req: express.Request
     res: express.Response
@@ -28,7 +30,7 @@ export interface Payload {
     email: string
 }
 
-const port = 4001
+const port = 4000
 
 const app = express()
 const httpServer = http.createServer(app)
@@ -66,7 +68,7 @@ schema.then(async schema => {
         '/',
         cors<cors.CorsRequest>({
             origin: [
-                'http://localhost:3000',
+                'http://localhost:3001',
                 'https://studio.apollographql.com',
                 'https://staging.0923-bleu-3.wns.wilders.dev/',
             ],

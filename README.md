@@ -24,7 +24,7 @@ To launch the project, clone it, connect to you docker account and then run the 
 `cp .env.example .env`  
 `cd ..`  
 `npm run dev`  
-The application is now available on localhost:3000  
+The application is now available on localhost:3001  
 The backend Apollo Studio is now available on localhost:4001  
 You can now change the necessary variables inside `.env` such as the secret ket that needs to be the same in both frontend and backend.
 

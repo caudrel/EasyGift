@@ -1,5 +1,8 @@
 import { useRouter } from 'next/router'
-import { useGetGroupByIdQuery } from '@/graphql/generated/schema'
+import {
+    useGetGroupByIdQuery,
+    useGetUserInfosQuery,
+} from '@/graphql/generated/schema'
 import { Separator } from '@/components/ui/separator'
 import React, { useState } from 'react'
 import ProfileCard from '@/components/ProfileCard'
@@ -21,6 +24,16 @@ export default function GroupDetails() {
         fetchPolicy: 'no-cache',
         skip: typeof groupId === 'undefined',
     })
+
+    const {
+        data: userData,
+        loading: userLoading,
+        error: userError,
+    } = useGetUserInfosQuery()
+
+    const user = userData?.getUserInfos
+    const currentUserId = userData?.getUserInfos.id
+
     const [showModal, setShowModal] = useState(false)
     const [showModalAddMembers, setShowModalAddMembers] = useState(false)
     const [isModalAvatarOpen, setIsModalAvatarOpen] = useState(false)
@@ -29,6 +42,14 @@ export default function GroupDetails() {
     if (error) return <h1>Erreur : {error.message}</h1>
 
     const group = data?.getGroupById
+    const userToGroups = group?.userToGroups
+
+    const currentUserIsAdmin = userToGroups?.find(
+        user => user.user_id === Number(currentUserId) && user.is_admin
+    )
+
+    const isAdmin = Boolean(currentUserIsAdmin)
+    console.log('isAdmin', isAdmin)
 
     const eventDate =
         group && group.event_date ? new Date(group.event_date) : undefined
@@ -119,26 +140,32 @@ export default function GroupDetails() {
                                             </p>
                                         )}
                                     </div>
-                                    <div className='flex sm:justify-end'>
-                                        <Button
-                                            className='bg-primaryBlue text-white px-4 py-2 rounded mt-10'
-                                            onClick={() => setShowModal(true)}
-                                        >
-                                            Modifier mes informations
-                                        </Button>
-                                        {showModal &&
-                                            createPortal(
-                                                <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
-                                                    <ModalUpdateGroup
-                                                        onClose={() =>
-                                                            setShowModal(false)
-                                                        }
-                                                        group={group}
-                                                    />
-                                                </div>,
-                                                document.body
-                                            )}
-                                    </div>
+                                    {isAdmin && (
+                                        <div className='flex sm:justify-end'>
+                                            <Button
+                                                className='bg-primaryBlue text-white px-4 py-2 rounded mt-10'
+                                                onClick={() =>
+                                                    setShowModal(true)
+                                                }
+                                            >
+                                                Modifier les informations
+                                            </Button>
+                                            {showModal &&
+                                                createPortal(
+                                                    <div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50'>
+                                                        <ModalUpdateGroup
+                                                            onClose={() =>
+                                                                setShowModal(
+                                                                    false
+                                                                )
+                                                            }
+                                                            group={group}
+                                                        />
+                                                    </div>,
+                                                    document.body
+                                                )}
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

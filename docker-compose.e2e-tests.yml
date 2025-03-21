@@ -1,4 +1,3 @@
-
 services:
   testDB:
     image: postgres:15-alpine
@@ -10,7 +9,7 @@ services:
       timeout: 5s
       retries: 5
     ports:
-      - 5432:5432
+      - 5433:5432
     tmpfs: /var/lib/postgresql
 
   backend:
@@ -23,21 +22,14 @@ services:
       - DB_HOST=testDB
     build: backend
     ports:
-      - 4001:4001
+      - 4001:4000
     volumes:
       - ./backend/src:/app/src
-
-  # upload-service:
-  #   build: file-upload-service
-  #   ports:
-  #     - 8000:8000
-  #   volumes:
-  #     - ./file-upload-service/files:/app/files
 
   frontend:
     build: frontend
     ports:
-      - 3000:3000
+      - 3001:3000
     env_file:
       - frontend/.env
     volumes:

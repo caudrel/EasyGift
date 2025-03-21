@@ -30,7 +30,7 @@ import { In } from 'typeorm'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-const url = process.env.SITE_URL || 'http://localhost:3000'
+const url = process.env.SITE_URL || 'http://localhost:3001'
 
 export async function findGroupByName(name: string) {
     return await Group.findOneBy({ name })
@@ -168,6 +168,7 @@ class GroupsResolver {
             if (email === ctx.user?.email) return
 
             const isUser = await findUserByEmail(email)
+            // if user already exist in CrazyGift DB, add him to the group, and send him an email
             if (isUser) {
                 await createUserToGroup({
                     group_id: newGroup.id,
@@ -175,14 +176,6 @@ class GroupsResolver {
                     is_admin: false,
                 })
                 try {
-                    // await mailer.sendMail({
-                    //     subject: `Bienvenue sur le groupe ${name} !`,
-                    //     to: email,
-                    //     from: 'crazygift24@gmail.com',
-                    //     text: `Bienvenue dans le groupe ${name}, ${ctx.user?.pseudo} vient de t'ajouter au groupe d'échange de cadeau : ${name}.
-                    //     Connecte toi vite pour commencer à discuter : ${url}/group/${newGroup.id}`,
-                    // })
-                    // return isUser
                     await sendMail({
                         Messages: [
                             {
@@ -203,10 +196,10 @@ class GroupsResolver {
                 }
             }
 
+            // if users no known from CrazyGift DB, create them account, add them to the group, and send them an email with a token
+
             const pseudo = email.split('@')[0]
-
             const password = 'Test@1234' // TODO
-
             const newUser = await createUser({ pseudo, email, password })
 
             await createUserToGroup({
@@ -216,14 +209,6 @@ class GroupsResolver {
             })
 
             try {
-                // await mailer.sendMail({
-                //     subject: `Bienvenue sur EasyGift ${pseudo}, une action de ta part est requise!`,
-                //     to: email,
-                //     from: 'crazygift24@gmail.com',
-                //     text: `Bienvenue sur EasyGift ${pseudo}, ${ctx.user?.pseudo} vient de t'ajouter au groupe d'échange de cadeau : ${name}.
-                //      Une action de ta part est requise, pour confirmer ton inscription au groupe, clique sur le lien suivant
-                //       : ${url}/confirm-participation?token=${newUser.token}`,
-                // })
                 await sendMail({
                     Messages: [
                         {
@@ -233,9 +218,14 @@ class GroupsResolver {
                                 Email: 'crazygift24@gmail.com',
                                 Name: 'Crazy',
                             },
-                            TextPart: `Bienvenue sur EasyGift ${pseudo}, ${ctx.user?.pseudo} vient de t'ajouter au groupe d'échange de cadeau : ${name}.
-                                 Une action de ta part est requise, pour confirmer ton inscription au groupe, clique sur le lien suivant
-                                  : ${url}/confirm-participation?token=${newUser.token}`,
+                            TextPart: `Bienvenue sur EasyGift ${pseudo},
+                            \n\n
+                            ${ctx.user?.pseudo} vient de t'ajouter au groupe d'échange de cadeaux : ${name}.\n\n
+                            Une action de ta part est requise. Pour confirmer ton inscription au groupe, clique sur le lien suivant :
+                            \n\n
+                            ${url}/confirm-participation?token=${newUser.token}
+                            \n\n
+                            Merci et à bientôt sur EasyGift !`,
                         },
                     ],
                 })

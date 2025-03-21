@@ -4,7 +4,7 @@ import ModalModifyPassword from '@/components/profil/ModalModifyPassword'
 import { useGetUserInfosQuery } from '../../graphql/generated/schema'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 import Head from 'next/head'
 
@@ -22,10 +22,21 @@ export default function Profile() {
     const user = userData?.getUserInfos
     const avatarId = user?.avatar?.id
 
+    useEffect(() => {
+        if (userError) {
+            const errorMessage =
+                userError.message ===
+                'Access denied! You need to be authenticated to perform this action!'
+                    ? 'Vous devez être connecté pour accéder à cette page'
+                    : userError.message
+            toast.error(errorMessage)
+            console.log(userError)
+        }
+    }, [userError])
+
     if (userLoading) return <h1>Loading...</h1>
     if (userError) {
-        toast.error(userError.message)
-        return <h1>Error: {userError.message}</h1>
+        return
     }
 
     return (

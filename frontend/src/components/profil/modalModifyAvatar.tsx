@@ -53,8 +53,13 @@ export default function ModalModifyAvatar({
     }
 
     useEffect(() => {
-        handleResize()
-        window.addEventListener('resize', handleResize)
+        if (isOpen) {
+            handleResize()
+            window.addEventListener('resize', handleResize)
+        } else {
+            window.removeEventListener('resize', handleResize)
+        }
+
         return () => {
             window.removeEventListener('resize', handleResize)
         }

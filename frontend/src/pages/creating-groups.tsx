@@ -6,6 +6,7 @@ import { ChangeEvent, FormEvent, useState, useEffect } from 'react'
 import { getConstraints } from '@/lib/utils'
 import { toast } from 'react-toastify'
 import Head from 'next/head'
+import { connectedUserEmail } from '../utils/checkConnection'
 
 const iconStar = {
     id: 'star',
@@ -24,6 +25,8 @@ export default function CreatingGroups() {
     const [name, setName] = useState<string>('')
     const [emails, setEmails] = useState<string[]>([])
     const [isFormValid, setIsFormValid] = useState<boolean>(false)
+    const [emailError, setEmailError] = useState<string>('')
+    const currentUserEmail = connectedUserEmail()
 
     const [addNewGroup, { error }] = useAddNewGroupMutation({
         onCompleted: () => {
@@ -39,16 +42,29 @@ export default function CreatingGroups() {
     const router = useRouter()
 
     useEffect(() => {
-        const formIsValid = name.trim() !== '' && emails.length >= 3
+        const filteredEmails = emails.filter(
+            email => email !== currentUserEmail
+        )
+        const formIsValid =
+            name.trim() !== '' &&
+            filteredEmails.length >= 2 &&
+            event_date.trim() !== ''
         setIsFormValid(formIsValid)
-    }, [name, emails])
+    }, [name, emails, currentUserEmail, event_date])
 
     const handleAddEmail = () => {
-        if (email && !emails.includes(email)) {
-            setEmails([...emails, email])
-            setEmail('')
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        if (email && emailRegex.test(email)) {
+            if (!emails.includes(email)) {
+                setEmails([...emails, email])
+                setEmail('')
+                setEmailError('') // Reset error message if email is valid
+            }
+        } else {
+            setEmailError('Veuillez entrer un email valide.') // Set error message if invalid
         }
     }
+
     const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => {
         setEmail(e.target.value)
     }
@@ -75,7 +91,7 @@ export default function CreatingGroups() {
     }
 
     const errorMessages = getConstraints(
-        error?.graphQLErrors[0].extensions.validationErrors
+        error?.graphQLErrors[0].extensions?.validationErrors
     )
 
     return (
@@ -144,6 +160,9 @@ export default function CreatingGroups() {
                             onChange={handleEmailChange}
                             className='w-full p-2 border rounded'
                         />
+                        {emailError && (
+                            <p className='text-red-500 mt-2'>{emailError}</p>
+                        )}
                     </div>
 
                     <div className='flex justify-end mb-4'>

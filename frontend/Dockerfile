@@ -2,6 +2,8 @@ FROM node:20.9.0-alpine3.17
 
 WORKDIR /app
 COPY package*.json ./
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+RUN node -e "require('events').EventEmitter.defaultMaxListeners = 20"
 RUN npm i
 COPY tsconfig.json tsconfig.json
 COPY tailwind.config.ts tailwind.config.ts

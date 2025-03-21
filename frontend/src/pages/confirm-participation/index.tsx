@@ -58,26 +58,28 @@ export default function ConfirmParticipationPage() {
     }
 
     const errorMessages = getConstraints(
-        registerError?.graphQLErrors[0].extensions.validationErrors
+        registerError?.graphQLErrors[0]?.extensions?.validationErrors
     )
 
     return (
         <>
             <Head>
                 <title>
-                    Création de mon compte suite à une invitation à rejoindre un
-                    groupe - Easy Gift
+                    Création de mon compte pour rejoindre un groupe - Easy Gift
                 </title>
             </Head>
-            <div className='flex flex-col  justify-center  items-center w-full h-full '>
+            <div className='min-h-screen flex flex-col mt-20 items-center'>
+                <h1 className='text-xl lg:text-2xl 2xl:text-3xl font-bold text-primaryBlue mb-10'>
+                    Créer un compte pour rejoindre un groupe
+                </h1>
                 <form
-                    className='flex flex-col items-center gap-2'
+                    className='w-full max-w-lg bg-white p-8 rounded shadow-md mb-5'
                     onSubmit={handleSubmit}
                 >
-                    <div className='grid gap-1'>
+                    <div className='mb-4'>
                         <label
                             htmlFor='pseudo'
-                            className='text-sm font-medium text-muted-foreground'
+                            className='block mb-2 font-medium text-muted-foreground'
                         >
                             Pseudo
                         </label>
@@ -85,14 +87,15 @@ export default function ConfirmParticipationPage() {
                             id='pseudo'
                             type='text'
                             name='pseudo'
+                            className='w-full p-2 border rounded'
                             defaultValue={data.getUserByToken.pseudo}
                         />
                     </div>
 
-                    <div className='grid gap-1'>
+                    <div className='mb-4'>
                         <label
                             htmlFor='password'
-                            className='text-sm font-medium text-muted-foreground'
+                            className='block mb-2 font-medium text-muted-foreground'
                         >
                             Mot de passe
                         </label>
@@ -100,25 +103,27 @@ export default function ConfirmParticipationPage() {
                             id='password'
                             type='password'
                             name='password'
+                            className='w-full p-2 border rounded'
                             placeholder='Indiquez votre mot de passe'
                             required
                         />
                     </div>
 
-                    <div className='grid gap-1'>
+                    <div className='mb-4'>
                         <label
-                            className='text-sm font-medium text-muted-foreground'
+                            className='block mb-2 font-medium text-muted-foreground'
                             htmlFor='confirmPassword'
                         >
                             Confirmez votre mot de passe
-                            <Input
-                                id='confirmPassword'
-                                type='password'
-                                name='confirmPassword'
-                                placeholder='Confirmez votre mot de passe'
-                                required
-                            />
                         </label>
+                        <Input
+                            id='confirmPassword'
+                            type='password'
+                            name='confirmPassword'
+                            className='w-full p-2 border rounded'
+                            placeholder='Confirmez votre mot de passe'
+                            required
+                        />
                     </div>
 
                     {errorMatchPassword && (

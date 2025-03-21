@@ -14,7 +14,7 @@ const db = new DataSource({
     port: parseInt(process.env.DB_PORT || '0') || 5432,
     username: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASS || 'postgres',
-    database: process.env.DB_NAME || 'postgres',
+    database: process.env.DB_NAME || 'easygift',
     entities: [User, Group, Avatar, Message, Discussion, UserToGroup],
     synchronize: true,
     logging: true,

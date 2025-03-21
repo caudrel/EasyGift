@@ -55,7 +55,7 @@ function Register() {
     }
 
     const errorMessages = getConstraints(
-        error?.graphQLErrors[0].extensions.validationErrors
+        error?.graphQLErrors[0]?.extensions?.validationErrors
     )
 
     return (

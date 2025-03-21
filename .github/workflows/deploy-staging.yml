@@ -1,4 +1,4 @@
-name: Test, compile and push client and server to production
+name: Test, compile and push client and server to staging
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
       - build-and-push-server
     runs-on: ubuntu-latest
     steps:
-      - name: Call VPS webhook to update production
+      - name: Call VPS webhook to update staging
         uses: wei/curl@master
         with:
           args: https://ops.easy-gift.0923-bleu-3.wns.wilders.dev/hooks/update-staging

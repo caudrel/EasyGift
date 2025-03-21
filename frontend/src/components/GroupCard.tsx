@@ -82,11 +82,7 @@ export default function MyGroup({ group, link }: GroupComponentProps) {
                         }`}
                     >
                         {displayedUsers.map(user => (
-                            <div
-                                className='group cursor-pointer relative'
-                                onClick={handleToggle}
-                                key={user.user.id}
-                            >
+                            <div className='group relative' key={user.user.id}>
                                 <img
                                     src={user.user.avatar?.url}
                                     className='w-10 h-10 rounded-full border-solid border-2 border-primaryRed transition ease-in-out hover:-translate-y-1 hover:scale-120 duration-300'
@@ -110,7 +106,11 @@ export default function MyGroup({ group, link }: GroupComponentProps) {
                             </div>
                         ))}
                         {!showAll && group.userToGroups.length > 7 && (
-                            <a className='flex z-10 items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800'>
+                            <a
+                                onClick={handleToggle}
+                                aria-label='Voir tous les utilisateurs'
+                                className='flex z-10 items-center justify-center w-10 h-10 text-xs font-medium text-white bg-gray-700 border-2 border-white rounded-full hover:bg-gray-600 dark:border-gray-800 cursor-pointer'
+                            >
                                 +{group.userToGroups.length - 7}
                             </a>
                         )}

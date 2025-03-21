@@ -41,8 +41,13 @@ export default function ModalModifyDetails({
     }
 
     useEffect(() => {
-        handleResize()
-        window.addEventListener('resize', handleResize)
+        if (isOpen) {
+            handleResize()
+            window.addEventListener('resize', handleResize)
+        } else {
+            window.removeEventListener('resize', handleResize)
+        }
+
         return () => {
             window.removeEventListener('resize', handleResize)
         }
@@ -57,27 +62,23 @@ export default function ModalModifyDetails({
             .then(() => {
                 toast.success('Les informations ont été modifiées avec succès!')
                 handleClose()
-                window.location.reload()
+                window.location.reload() // Note : le rechargement peut parfois ne pas être optimal
             })
-            .catch(console.error)
-        toast.error('Erreur lors de la modification des informations.')
+            .catch(error => {
+                console.error(error)
+                toast.error('Erreur lors de la modification des informations.')
+            })
     }
 
     //end of inmport code scroll modal
 
     const { data, loading, error } = useProfilAvatarsQuery()
 
-    // useEffect(() => {
-    //   if (data?.profilAvatars) {
-    //     setAvatars(data.profilAvatars as Avatar[]);
-    //   }
-    // }, [data]);
-
     const [updateUserMutation, { loading: updating, error: updateError }] =
         useUpdateUserMutation()
 
     const errorMessages = getConstraints(
-        updateError?.graphQLErrors[0].extensions.validationErrors
+        updateError?.graphQLErrors?.[0]?.extensions?.validationErrors
     )
 
     if (loading) return <div>Loading...</div>

@@ -24,7 +24,7 @@ import * as dotenv from 'dotenv'
 import sendMail from '../mailer'
 dotenv.config()
 
-const url = process.env.SITE_URL || 'http://localhost:3000'
+const url = process.env.SITE_URL || 'http://localhost:3001'
 
 export async function findUserByEmail(email: string) {
     return await User.findOne({
@@ -119,6 +119,7 @@ class UsersResolver {
         )
 
         const responseMessage = new ResponseMessage()
+
         if (isPasswordValid) {
             const token = await new SignJWT({ email: user.email })
                 .setProtectedHeader({ alg: 'HS256', typ: 'jwt' })

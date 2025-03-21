@@ -15,6 +15,7 @@ import {
     ArrayNotEmpty,
     IsDateString,
     IsEmail,
+    IsNotEmpty,
     Length,
 } from 'class-validator'
 import { Discussion } from './discussion'
@@ -28,7 +29,7 @@ export class Group extends BaseEntity {
     id: number
 
     @Field()
-    @Column({ length: 30 })
+    @Column({ length: 50, nullable: false })
     name: string
 
     @Field()
@@ -65,6 +66,7 @@ export class NewGroupInput {
     @Length(3, 50, {
         message: 'Le nom du groupe doit contenir entre 3 et 50 caractères',
     })
+    @IsNotEmpty({ message: 'Le nom du groupe ne peut pas être vide' })
     name: string
 
     @Field(() => [String])
@@ -88,7 +90,7 @@ export class NewGroupInput {
 
 @InputType()
 export class UpdateGroupInput {
-    @Field({ nullable: true })
+    @Field({ nullable: false })
     @Length(3, 50, {
         message: 'Le nom du groupe doit contenir entre 3 et 50 caractères',
     })
